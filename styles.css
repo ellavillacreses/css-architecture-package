@@ -1,5 +1,5 @@
 /*CSS by Ella Villacreses*/
-@layer reset, base, layout, components, utilities;
+@layer reset, base, layout, components, utilities, overrides;
 
 /*Imported Fonts*/
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Nanum+Myeongjo&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
@@ -27,6 +27,7 @@
     --lt-pink: #CCBAB5;
     --dark-pink: #FC94AF;
     --off-white: #F3F2EE;
+    --white: #FFFFFF;
       
     /*Type*/
     --font-body: Playfair display, sans-serif;
@@ -44,7 +45,7 @@
     --big-radius: 16px;
 
     /*Focus*/
-    --focus-color: #F3F2EE;
+    --focus-color: #7F6244;
     --focus-width: 2px;
   }
 
@@ -81,12 +82,18 @@
   }
   
   a:hover {
-    color: var(--off-white);
+    color: var(--focus-color);
   }
 }
 
 /*Layout*/
 @layer layout {
+  .card-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--lg-padding);
+  }
+
   header {
     background: var(--beige);
     color: var(--off-white);
@@ -98,12 +105,31 @@
     margin: 16px 0 0 0;
     display: flex;
     gap: 16px;
+    color: var(--focus-color);
   }
   
+  main {
+    padding: var(--lg-padding);
+  }
+
   footer {
     background: var(--lt-pink);
     color: var(--black);
     padding: var(--lg-padding);
+  }
+
+  /*MEDIA QUERIES - Medium*/
+  @media (min-width: 768px) {
+    .card-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /*MEDIA QUERIES - Large*/
+  @media (min-width: 1440px) {
+    .card-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }
 
@@ -118,7 +144,28 @@
     text-decoration: none;
     font-weight: bold;
   }
+
+  .card {
+    background: white;
+    display: grid;
+    border: 1px solid var(--dark-pink);
+    border-radius: var(--small-radius);
+    padding: var(--lg-padding);
+  }
+
+  form {
+    border: 4px solid var(--dark-pink);
+    padding: var(--md-padding);
+    background: var(--lt-pink);
+  }
+
+  .site-header nav a[aria-current='page'] {
+    text-decoration: underline;
+    font-weight: bold;
+  }
   
+  /*Component States*/
+
   .button:hover,
   button:hover {
     background: var(--dark-pink);
@@ -135,50 +182,59 @@
     background: var(--off-white);
     color: var(--black);
   }
-
-  .card {
-    background: white;
-    display: grid;
-    border: 1px solid var(--dark-pink);
-    border-radius: var(--small-radius);
-    padding: var(--lg-padding);
-  }
-  
-  form {
-    border: 4px solid var(--dark-pink);
-    padding: var(--md-padding);
-    background: var(--lt-pink);
-  }
-
-  .site-header nav a[aria-current='page'] {
-    display: none;
-  }
 }
 
-/*MEDIA QUERIES - Medium*/
-@media (min-width: 768px) {
-  .card-container {
-    grid-template-columns: repeat(2, 1fr);
+/*Utilities*/
+@layer utilities {
+  .text-center {
+    text-align: center;
   }
-}
 
-/*MEDIA QUERIES - Large*/
-@media (min-width: 1440px) {
-  .card-container {
-    grid-template-columns: repeat(3, 1fr);
+  .brown-background {
+    background-color: var(--focus-color);
+  }
+
+  .no-margin {
+    margin: 0;
   }
 }
 
 /*MEDIA QUERIES - Print*/
-@media print {
-  img {
-    display: none;
+@layer overrides {
+  @media print {
+    img {
+      display: none;
+    }
+
+    body {
+      background-color: var(--white);
+      color: var(--black);
+      font-size: 12pt;
+    }
+
+    a {
+      color: var(--black);
+    }
+
+    .site-header nav {
+      display: none;
+    }
   }
 }
 
 /*ARCHITECTURE NOTES*/
 /*For my layer and order strategy, I made sure to organize all of my CSS to properly cascade down to ensure success when building my site.
-I began with base styles, then moved into layout and component styles. I ended with the different size media queries and the print block to finish my architecture.
+The initial reset is to remove any pre-existing spacing, then I began with base styles. These base styles confirm all global design tokens, like
+typography, colors, and different spacing variables. I moved into layout and component styles to build the overall page structure.
+My utilities class is for reusable styles, while the component and component states classes were created for my different hover and active states.
+I ended with the different size media queries and the print block to finish my architecture. My overrides section contains the print styling, ensuring a clean print with black and white coloring and image removal. 
+This layer order determines the priority that differing components have within my site. The later layers have priority over the initial layers during
+conflicts, allowing any intentional overrides or queries to execute successfully. Since the print-specific style requires styling override, I placed
+it under this final layer.
+
+I defined .card-container as a grid by using the command display: grid to build a default single column layout with consistent 24px spacing. At 768px the columns will shift
+to a two column grid and at 1440px it will move to a three column grid. Focusing the mobile styles first will make all the content easily accessible on mobile devices and smaller
+viewports, which then makes the content able to expand on bigger devices.
 
 My token decisions center around the desire for a professional yet personable and creative portfolio.
 I chose simple shades of beige, white, and black and then fun accent tones of pink. I built variables for Spacing, Shape, and Focus to simplify my coding later.
@@ -192,5 +248,5 @@ The browser checks I conducted involved using base HTML and conducting a variety
 he first browser tests I conducted were done at both narrow and wide widths. I opened my site in the default browser and shrank it to 375px to make sure that columns stacked correctly and that there was no overflow.
 I then did the same thing but at the regular size viewport, 1440px wide. Everything changed correctly and realigned to the 3 column layout I had included.
 For my focus checks, I moused over all of the buttons and links to ensure that the color fill, text decoration changes, and underlines appeared properly.
-To conduct a print check, I used Command + P to open the print preview window.
-I then analyzed the print preview window that appeared, which correctly showed a lack of images in order to increase both printing efficiency and accessibility. */
+To conduct my keyboard focus check, I utilized Shift+Tab. This showed the correct changes that focused on the home page nav button and the email address for contact.
+To conduct a print check, I used Command + P to open the print preview window. I then analyzed the print preview window that appeared, which correctly showed a lack of images in order to increase both printing efficiency and accessibility. */
