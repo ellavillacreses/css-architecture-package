@@ -88,16 +88,24 @@
 
 /*Layout*/
 @layer layout {
+  .wrapper {
+    inline-size: min(100% - 2rem, 72rem);
+    margin-inline: auto;
+  }
+
   .card-container {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(18rem, 100%), 1fr));
     gap: var(--lg-padding);
   }
 
   header {
     background: var(--beige);
-    color: var(--off-white);
-    padding: var(--lg-padding);
+    color: var(--black);
+    padding-block: var(--lg-padding);
+    padding-inline: var(--md-padding);
   }
   
   .site-header nav ul {
@@ -109,26 +117,31 @@
   }
   
   main {
-    padding: var(--lg-padding);
+    padding-block: var(--lg-padding);
+    padding-inline: var(--md-padding);
   }
 
   footer {
     background: var(--lt-pink);
     color: var(--black);
-    padding: var(--lg-padding);
+    padding-block: var(--lg-padding);
+    padding-inline: var(--md-padding);
   }
 
-  /*MEDIA QUERIES - Medium*/
-  @media (min-width: 768px) {
-    .card-container {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .project-details {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--lg-padding);
+    align-items: start;
   }
 
-  /*MEDIA QUERIES - Large*/
-  @media (min-width: 1440px) {
-    .card-container {
-      grid-template-columns: repeat(3, 1fr);
+  .project-description {
+    min-inline-size: 0;
+  }
+
+  @media (max-width: 700px) {
+    .project-details {
+      grid-template-columns: 1fr;
     }
   }
 }
@@ -146,11 +159,34 @@
   }
 
   .card {
-    background: white;
+    container-type: inline-size;
+    background: var(--white);
+    color: var(--black);
     display: grid;
     border: 1px solid var(--dark-pink);
     border-radius: var(--small-radius);
     padding: var(--lg-padding);
+    gap: var(--md-padding);
+  }
+
+  .card-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--md-padding);
+  }
+
+  @container (min-width: 30rem) {
+    .card-content {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+  
+  .project-links {
+    list-style: none;
+    display: grid;
+    padding-inline-start: 0;
+    gap: var(--md-padding);
   }
 
   form {
@@ -199,8 +235,23 @@
   }
 }
 
-/*MEDIA QUERIES - Print*/
 @layer overrides {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --beige: #242424;
+      --black: #F3F2EE;
+      --lt-pink: #383033;
+      --dark-pink: #CCBAB5;
+      --white: #2D2D2D; 
+      --off-white: #1A1A1A;
+      --focus-color: #FC94AF;
+    }
+
+    .site-header nav a {
+      color: var(--focus-color);
+    }
+  }
+
   @media print {
     img {
       display: none;
@@ -222,31 +273,13 @@
   }
 }
 
-/*ARCHITECTURE NOTES*/
-/*For my layer and order strategy, I made sure to organize all of my CSS to properly cascade down to ensure success when building my site.
-The initial reset is to remove any pre-existing spacing, then I began with base styles. These base styles confirm all global design tokens, like
-typography, colors, and different spacing variables. I moved into layout and component styles to build the overall page structure.
-My utilities class is for reusable styles, while the component and component states classes were created for my different hover and active states.
-I ended with the different size media queries and the print block to finish my architecture. My overrides section contains the print styling, ensuring a clean print with black and white coloring and image removal. 
-This layer order determines the priority that differing components have within my site. The later layers have priority over the initial layers during
-conflicts, allowing any intentional overrides or queries to execute successfully. Since the print-specific style requires styling override, I placed
-it under this final layer.
+/*ARCHITECTURE NOTES
+I chose not to use subgrid because my project cards currently have a simple structure.
+The existing layout is responsive and communicates the details I want to show successfully. In the future,
+if I add a subgrid it would be to unify the appearance of content across cards.
 
-I defined .card-container as a grid by using the command display: grid to build a default single column layout with consistent 24px spacing. At 768px the columns will shift
-to a two column grid and at 1440px it will move to a three column grid. Focusing the mobile styles first will make all the content easily accessible on mobile devices and smaller
-viewports, which then makes the content able to expand on bigger devices.
-
-My token decisions center around the desire for a professional yet personable and creative portfolio.
-I chose simple shades of beige, white, and black and then fun accent tones of pink. I built variables for Spacing, Shape, and Focus to simplify my coding later.
-I used simple px measurements so that multiply from one another (ex: the radius moving from --small-radius: 4px to --medium-radius: 8px and ending with --big-radius: 16px;).
-This will help me when organizing my site due to establishing global spacing rules.
-
-My naming approach involves me apply the most intuitive name for each token and variable.
-These are names that were also commonly used throughout the duration of my HTML/CSS classes within the GIT program.
-
-The browser checks I conducted involved using base HTML and conducting a variety of viewport alterations. 
-he first browser tests I conducted were done at both narrow and wide widths. I opened my site in the default browser and shrank it to 375px to make sure that columns stacked correctly and that there was no overflow.
-I then did the same thing but at the regular size viewport, 1440px wide. Everything changed correctly and realigned to the 3 column layout I had included.
-For my focus checks, I moused over all of the buttons and links to ensure that the color fill, text decoration changes, and underlines appeared properly.
-To conduct my keyboard focus check, I utilized Shift+Tab. This showed the correct changes that focused on the home page nav button and the email address for contact.
-To conduct a print check, I used Command + P to open the print preview window. I then analyzed the print preview window that appeared, which correctly showed a lack of images in order to increase both printing efficiency and accessibility. */
+/*FALLBACK STRATEGY
+The default layout creates one column so that browsers can successfully portray content even if
+there is not support to display container queries. The browsers that support container queries will
+change to be a two column layout when the container hits 30rem wide.
+*/
