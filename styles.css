@@ -241,7 +241,7 @@
       --beige: #242424;
       --black: #F3F2EE;
       --lt-pink: #383033;
-      --dark-pink: #CCBAB5;
+      --dark-pink: #4A4A4A;
       --white: #2D2D2D; 
       --off-white: #1A1A1A;
       --focus-color: #FC94AF;
@@ -273,7 +273,9 @@
   }
 }
 
-/*ARCHITECTURE NOTES
+/*ARCHITECTURE NOTES*/
+
+/*DOCUMENTED SUBGRID EXPLANATION
 I chose not to use subgrid because my project cards currently have a simple structure.
 The existing layout is responsive and communicates the details I want to show successfully. In the future,
 if I add a subgrid it would be to unify the appearance of content across cards.
@@ -282,4 +284,21 @@ if I add a subgrid it would be to unify the appearance of content across cards.
 The default layout creates one column so that browsers can successfully portray content even if
 there is not support to display container queries. The browsers that support container queries will
 change to be a two column layout when the container hits 30rem wide.
+
+/*TESTING NOTES
+I conducted my first document checks at narrow, medium, and wide viewports. To do this, I used DevTools and
+opened my site in the browser to begin. For my narrow viewport, I set the dimensions to 375px by 691px. All of
+my columns stacked into the desired one column layout successfully. For the medium viewport, I changed the
+dimensions to 768px by 921px. The columns changed to have 2 project cards at the top and 1 project card stacked
+below the others as desired. Finally, for my wide viewport check I set the dimensions to 1440px by 1382px and saw
+all three of my project cards lay side by side as I wanted.
+
+I next set my zoom to 200% within the DevTools top panel. There was no overflow or uneven layout changes after the
+zoom increase, all of the content successfully stacked and text wrapped as I had coded.
+For keyboard focus, I used the Tab key to go through each link to test the focus ability. Each project link was
+successfully scrolled through and highlighted when I conducted this check.
+
+I opened the Rendering tab within DevTools and set the "Emulate CSS media feature prefers-color-scheme" to 
+"prefers-color-scheme: dark". This showed me my dark mode, with my project cards now having black backgrounds and
+white text. The nav items now turned dark pink. 
 */
